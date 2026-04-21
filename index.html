@@ -233,25 +233,22 @@
         /* Handwriting / Tracing lines container */
         .lines-w {
             width: 95%;
-            height: 65px;
+            height: 150px; /* 超特大号，方便幼儿书写 */
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border-top: 1.5px solid #000;
-            border-bottom: 1.5px solid #000;
+            border: none;
+            /* 重新分配三线位置：28px(顶), 70px(中虚), 112px(基线) */
+            background: 
+                linear-gradient(#000 2px, transparent 2px) 0 28px / 100% 100% no-repeat,
+                linear-gradient(to right, #aaa 50%, transparent 50%) 0 70px / 8px 1.5px repeat-x,
+                linear-gradient(#000 2px, transparent 2px) 0 112px / 100% 100% no-repeat;
         }
 
-        /* 中虚线 —— 用伪元素渲染 */
-        .lines-w::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 50%;
-            border-top: 1px dashed #aaa;
-        }
+        /* 移除原有的伪元素中线逻辑，已整合进背景 */
+        .lines-w::after { display: none; }
 
         /* Clap It Dots Grid (No Gap Version) */
         .dots-row {
@@ -558,7 +555,7 @@
                         <div class="icon-v"></div>
                         <div class="title-v">Spell It!</div>
                     </div>
-                    <div class="module-main">
+                    <div class="module-main" style="overflow: visible;">
                         <div id="out-spell" class="boxes-row"></div>
                     </div>
                     <div class="module-ft">Spell the word.</div>
@@ -660,17 +657,13 @@
             const wrap = document.getElementById('out-trace-wrap');
             wrap.innerHTML = '';
 
-            // === 三线格关键尺寸 ===
-            // CSS .lines-w 高 65px，border-box，上下各 1.5px 边框
-            // 内容区高度 ≈ 62px
-            // CSS ::after 将中虚线放在 top:50% = 容器的 32.5px 处
-            // 映射到 SVG 内部坐标:
-            //   顶边 = 0, 中虚线 ≈ 31, 底边 ≈ 62
-            //   小写区(x-height) = 底边到中虚线 = 31px
-            const innerH = 62; // 内容区高度
-            const Y_MID = 31;   // 中虚线位置
-            const Y_BASE = 61;  // 基线位置（底边内侧留 1px）
-            const X_HEIGHT_PX = Y_BASE - Y_MID; // = 30px
+            // === 三线格关键尺寸 (适配 150px 容器) ===
+            // 顶线: 28, 中线: 70, 基线: 112
+            // 下方留出 38px
+            const innerH = 150; 
+            const Y_MID = 70;   
+            const Y_BASE = 112;  
+            const X_HEIGHT_PX = Y_BASE - Y_MID; // = 42px
 
             // === 用 Canvas 实测字体 x-height 比例 ===
             const testSize = 200;
