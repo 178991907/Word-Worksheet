@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Word Worksheet Generator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Nunito:wght@400;600;700;800;900&family=Raleway+Dots&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Nunito:wght@400;600;700;800;900&family=Raleway+Dots&display=swap"
+        rel="stylesheet">
     <style>
         /* ========== 1. Global Reset & Scale ========== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --page-yellow: #fdd835;
             --sheet-white: #ffffff;
@@ -17,7 +25,7 @@
             --border-heavy: 3px;
             --font-main: 'Nunito', sans-serif;
             --font-fancy: 'Bubblegum Sans', cursive;
-            --watermark-text: "公众号【英语全科启蒙】"; /* 只需要在这里修改一次 */
+            --watermark-text: "公众号【英语全科启蒙】";
         }
 
         body {
@@ -34,12 +42,13 @@
             background: #fff;
             padding: 12px 24px;
             border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             display: flex;
             gap: 12px;
             margin-bottom: 30px;
             z-index: 1000;
         }
+
         .toolbar input {
             border: 2px solid #eee;
             padding: 8px 16px;
@@ -48,6 +57,7 @@
             width: 180px;
             outline: none;
         }
+
         .toolbar button {
             border: none;
             padding: 8px 18px;
@@ -56,52 +66,75 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .btn-gen { background: var(--page-yellow); }
-        .btn-print { background: #4caf50; color: #fff; }
+
+        .btn-gen {
+            background: var(--page-yellow);
+        }
+
+        .btn-print {
+            background: #4caf50;
+            color: #fff;
+        }
 
         /* ========== 3. A4 Structure (Precise mm) ========== */
         .a4-page {
             width: 210mm;
             height: 297mm;
             background: var(--page-yellow);
-            padding: 8mm; /* Border thickness */
-            box-shadow: 0 10px 50px rgba(0,0,0,0.2);
+            padding: 8mm;
+            /* Border thickness */
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
         }
+
         .inner-sheet {
             background: var(--sheet-white);
             width: 100%;
             height: 100%;
-            padding: 5mm 10mm; /* Compressed top/bottom padding */
+            padding: 5mm 10mm;
+            /* Compressed top/bottom padding */
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
         /* ========== 4. Header Section ========== */
-        .sheet-top { text-align: right; margin-bottom: 2px; }
+        .sheet-top {
+            text-align: right;
+            margin-bottom: 2px;
+        }
+
         .name-area {
-            font-size: 20px; /* Smaller */
+            font-size: 20px;
+            /* Smaller */
             font-weight: 800;
             display: inline-flex;
             align-items: baseline;
             gap: 6px;
         }
-        .line-under { width: 220px; border-bottom: 2px solid #000; height: 1px; margin-bottom: 3px; }
-        
+
+        .line-under {
+            width: 220px;
+            border-bottom: 2px solid #000;
+            height: 1px;
+            margin-bottom: 3px;
+        }
+
         .big-banner {
             text-align: center;
             font-family: var(--font-fancy);
-            font-size: 58px; /* Further reduced to save vertical space */
+            font-size: 58px;
+            /* Further reduced to save vertical space */
             line-height: 1;
             color: var(--teal-accent);
             -webkit-text-stroke: 1.8px #000;
             text-shadow: 3px 3px 0 #000;
-            margin: 2px 0 10px; /* Minimalist margins */
+            margin: 2px 0 10px;
+            /* Minimalist margins */
         }
 
         /* ========== 5. The Grid (2x4) ========== */
@@ -109,14 +142,16 @@
             flex: 1;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: repeat(4, 25%); /* Force 25% height per row regardless of content */
+            grid-template-rows: repeat(4, 25%);
+            /* Force 25% height per row regardless of content */
             border: var(--border-heavy) solid #000;
             min-height: 0;
             overflow: hidden;
         }
 
         .module {
-            border: 1.5px solid #000; /* Shared borders */
+            border: 1.5px solid #000;
+            /* Shared borders */
             display: flex;
             flex-direction: column;
             padding: 10px 12px 6px;
@@ -129,15 +164,28 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            height: 38px; /* Further reduced */
+            height: 38px;
+            /* Further reduced */
             margin-bottom: 2px;
         }
-        .icon-v { width: 70px; height: 38px; display: flex; align-items: center; }
-        .icon-v svg { max-width: 100%; max-height: 95%; }
+
+        .icon-v {
+            width: 70px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+        }
+
+        .icon-v svg {
+            max-width: 100%;
+            max-height: 95%;
+        }
+
         .title-v {
             font-family: var(--font-main);
             font-size: 22px;
-            font-weight: 600; /* Regular weight like template */
+            font-weight: 600;
+            /* Regular weight like template */
             text-align: right;
             line-height: 1;
             margin-top: 4px;
@@ -150,7 +198,8 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            overflow: hidden; /* Local guard */
+            overflow: hidden;
+            /* Local guard */
         }
 
         /* Footer logic: Instructions */
@@ -159,7 +208,8 @@
             font-size: 13px;
             font-weight: 800;
             padding: 2px 0;
-            height: 30px; /* Force consistent small height */
+            height: 30px;
+            /* Force consistent small height */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -167,13 +217,23 @@
         }
 
         /* ========== 6. Module Internal Styles ========== */
-        .big-w { font-size: 90px; font-weight: 900; line-height: 0.9; }
-        .color-w { font-size: 90px; font-weight: 900; -webkit-text-stroke: 2.5px #000; color: transparent; }
-        
+        .big-w {
+            font-size: 90px;
+            font-weight: 900;
+            line-height: 0.9;
+        }
+
+        .color-w {
+            font-size: 90px;
+            font-weight: 900;
+            -webkit-text-stroke: 2.5px #000;
+            color: transparent;
+        }
+
         /* Handwriting / Tracing lines container */
         .lines-w {
             width: 95%;
-            height: 65px; 
+            height: 65px;
             position: relative;
             display: flex;
             align-items: center;
@@ -182,93 +242,131 @@
             border-top: 1.5px solid #000;
             border-bottom: 1.5px solid #000;
         }
+
         /* 中虚线 —— 用伪元素渲染 */
         .lines-w::after {
             content: '';
             position: absolute;
-            left: 0; right: 0;
+            left: 0;
+            right: 0;
             top: 50%;
             border-top: 1px dashed #aaa;
         }
 
         /* Clap It Dots Grid (No Gap Version) */
-        .dots-row { 
+        .dots-row {
             display: grid;
-            grid-template-columns: repeat(5, 52px); /* Fixed size for perfect alignment */
-            gap: 2px 0; /* Only vertical gap */
+            grid-template-columns: repeat(5, 52px);
+            /* Fixed size for perfect alignment */
+            gap: 2px 0;
+            /* Only vertical gap */
             justify-content: center;
         }
-        .dot { 
-            width: 52px; 
-            height: 52px; 
-            border: 2px solid #000; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 22px; 
-            font-weight: 900; 
+
+        .dot {
+            width: 52px;
+            height: 52px;
+            border: 2px solid #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 900;
         }
-        
+
         /* Elkonin boxes */
-        .boxes-row { display: flex; gap: 6px; align-items: flex-end; }
-        .eb-box { border: 2.5px solid #000; background: #fff; }
+        .boxes-row {
+            display: flex;
+            gap: 6px;
+            align-items: flex-end;
+        }
+
+        .eb-box {
+            border: 2.5px solid #000;
+            background: #fff;
+        }
 
         /* Word Hunt */
         /* 用负 margin 抵消模块 padding，让网格贴到模块左右边线 */
-        .hunt-wrap { 
-            width: calc(100% + 24px); 
-            margin-left: -12px; 
+        .hunt-wrap {
+            width: calc(100% + 24px);
+            margin-left: -12px;
             margin-right: -12px;
-            margin-top: auto;  /* 吸收上方所有空间，推到底部 */
-            margin-bottom: -6px; /* 抵消模块底部 padding */
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+            margin-top: auto;
+            /* 吸收上方所有空间，推到底部 */
+            margin-bottom: -6px;
+            /* 抵消模块底部 padding */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .hunt-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            width: 100%; 
+
+        .hunt-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            width: 100%;
             background: #fff;
             gap: 0;
             border-top: 1.5px solid #000;
             border-bottom: 1.5px solid #000;
         }
-        .h-cell { 
+
+        .h-cell {
             border: none;
             border-right: 1px solid #000;
             border-bottom: 1px solid #000;
-            padding: 6px 4px; 
-            text-align: center; 
-            font-size: 18px; 
+            padding: 6px 4px;
+            text-align: center;
+            font-size: 18px;
             font-weight: 400;
-            height: 55px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: 'Nunito', sans-serif;
             overflow: hidden;
         }
+
         /* 右列不画右边线 */
-        .h-cell:nth-child(3n) { border-right: none; }
+        .h-cell:nth-child(3n) {
+            border-right: none;
+        }
+
         /* 底行不画底边线（由 grid 的 border-bottom 承担） */
-        .h-cell:nth-child(n+4) { border-bottom: none; }
+        .h-cell:nth-child(n+4) {
+            border-bottom: none;
+        }
 
         /* Go Tell */
-        .tell-stack { 
-            width: 90%; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 45px; /* Large space for writing names */
-            margin-top: -10px; /* Offset to center everything */
+        .tell-stack {
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 45px;
+            /* Large space for writing names */
+            margin-top: -10px;
+            /* Offset to center everything */
         }
-        .tell-q { font-size: 20px; font-weight: 800; text-align: center; }
-        .tell-solid-line { border-bottom: 2px solid #000; width: 100%; height: 1px; }
-        
+
+        .tell-q {
+            font-size: 20px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .tell-solid-line {
+            border-bottom: 2px solid #000;
+            width: 100%;
+            height: 1px;
+        }
+
         .watermark-container {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             overflow: hidden;
             z-index: 99;
@@ -277,6 +375,7 @@
             grid-template-rows: repeat(6, 1fr);
             opacity: 0.05;
         }
+
         .watermark-item {
             font-family: var(--font-fancy);
             font-size: 24px;
@@ -285,35 +384,53 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            white-space: nowrap; /* 强制单行 */
+            white-space: nowrap;
+            /* 强制单行 */
             user-select: none;
             color: #000;
         }
 
         /* ========== 7. Print ========== */
         @media print {
+
             /* 强制浏览器打印背景颜色与图像 */
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            body { background: none !important; padding: 0 !important; margin: 0 !important; width: 210mm; height: 297mm; }
-            .toolbar, .btn-gen, .btn-print { display: none !important; }
-            
-            .a4-page { 
-                box-shadow: none !important; 
-                width: 210mm !important; 
-                height: 297mm !important; 
-                padding: 8mm !important; 
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            body {
+                background: none !important;
+                padding: 0 !important;
                 margin: 0 !important;
-                background: var(--page-yellow) !important; 
+                width: 210mm;
+                height: 297mm;
+            }
+
+            .toolbar,
+            .btn-gen,
+            .btn-print {
+                display: none !important;
+            }
+
+            .a4-page {
+                box-shadow: none !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                padding: 8mm !important;
+                margin: 0 !important;
+                background: var(--page-yellow) !important;
                 -webkit-print-color-adjust: exact !important;
             }
-            
-            @page { 
-                size: A4; 
-                margin: 0; 
+
+            @page {
+                size: A4;
+                margin: 0;
             }
         }
     </style>
 </head>
+
 <body>
 
     <div class="toolbar">
@@ -326,7 +443,7 @@
         <div class="inner-sheet">
             <!-- 自动生成的水印容器 -->
             <div id="wm-container" class="watermark-container"></div>
-            
+
             <div class="sheet-top">
                 <div class="name-area">
                     <span>Name:</span>
@@ -341,9 +458,11 @@
                     <div class="module-hd">
                         <div class="icon-v">
                             <svg viewBox="0 0 100 80">
-                                <path d="M10 15 Q50 10 50 15 V70 Q50 75 10 70 Z" fill="#fff" stroke="#000" stroke-width="2.5"/>
-                                <path d="M90 15 Q50 10 50 15 V70 Q50 75 90 70 Z" fill="#fff" stroke="#000" stroke-width="2.5"/>
-                                <path d="M50 15 V70" stroke="#000" stroke-width="1.5"/>
+                                <path d="M10 15 Q50 10 50 15 V70 Q50 75 10 70 Z" fill="#fff" stroke="#000"
+                                    stroke-width="2.5" />
+                                <path d="M90 15 Q50 10 50 15 V70 Q50 75 90 70 Z" fill="#fff" stroke="#000"
+                                    stroke-width="2.5" />
+                                <path d="M50 15 V70" stroke="#000" stroke-width="1.5" />
                             </svg>
                         </div>
                         <div class="title-v">Read It!</div>
@@ -359,10 +478,12 @@
                     <div class="module-hd">
                         <div class="icon-v">
                             <svg viewBox="0 0 160 40">
-                                <path d="M10 20 L30 8 L30 32 Z" fill="#fbc02d" stroke="#000" stroke-width="2"/>
-                                <rect x="30" y="8" width="90" height="24" fill="#fdd835" stroke="#000" stroke-width="2"/>
-                                <rect x="120" y="8" width="8" height="24" fill="#aaa" stroke="#000" stroke-width="2"/>
-                                <path d="M128 8 H140 Q145 8 145 20 Q145 32 140 32 H128 Z" fill="#f06292" stroke="#000" stroke-width="2"/>
+                                <path d="M10 20 L30 8 L30 32 Z" fill="#fbc02d" stroke="#000" stroke-width="2" />
+                                <rect x="30" y="8" width="90" height="24" fill="#fdd835" stroke="#000"
+                                    stroke-width="2" />
+                                <rect x="120" y="8" width="8" height="24" fill="#aaa" stroke="#000" stroke-width="2" />
+                                <path d="M128 8 H140 Q145 8 145 20 Q145 32 140 32 H128 Z" fill="#f06292" stroke="#000"
+                                    stroke-width="2" />
                             </svg>
                         </div>
                         <div class="title-v">Write It!</div>
@@ -381,8 +502,16 @@
                     </div>
                     <div class="module-main">
                         <div class="dots-row">
-                            <div class="dot">1</div><div class="dot">2</div><div class="dot">3</div><div class="dot">4</div><div class="dot">5</div>
-                            <div class="dot">6</div><div class="dot">7</div><div class="dot">8</div><div class="dot">9</div><div class="dot">10</div>
+                            <div class="dot">1</div>
+                            <div class="dot">2</div>
+                            <div class="dot">3</div>
+                            <div class="dot">4</div>
+                            <div class="dot">5</div>
+                            <div class="dot">6</div>
+                            <div class="dot">7</div>
+                            <div class="dot">8</div>
+                            <div class="dot">9</div>
+                            <div class="dot">10</div>
                         </div>
                     </div>
                     <div class="module-ft">How many syllables are in the word?<br>Color in the correct number.</div>
@@ -405,10 +534,12 @@
                     <div class="module-hd">
                         <div class="icon-v">
                             <svg viewBox="0 0 160 40">
-                                <path d="M10 20 L30 8 L30 32 Z" fill="#fbc02d" stroke="#000" stroke-width="2"/>
-                                <rect x="30" y="8" width="90" height="24" fill="#fdd835" stroke="#000" stroke-width="2"/>
-                                <rect x="120" y="8" width="8" height="24" fill="#aaa" stroke="#000" stroke-width="2"/>
-                                <path d="M128 8 H140 Q145 8 145 20 Q145 32 140 32 H128 Z" fill="#f06292" stroke="#000" stroke-width="2"/>
+                                <path d="M10 20 L30 8 L30 32 Z" fill="#fbc02d" stroke="#000" stroke-width="2" />
+                                <rect x="30" y="8" width="90" height="24" fill="#fdd835" stroke="#000"
+                                    stroke-width="2" />
+                                <rect x="120" y="8" width="8" height="24" fill="#aaa" stroke="#000" stroke-width="2" />
+                                <path d="M128 8 H140 Q145 8 145 20 Q145 32 140 32 H128 Z" fill="#f06292" stroke="#000"
+                                    stroke-width="2" />
                             </svg>
                         </div>
                         <div class="title-v">Trace It!</div>
@@ -438,16 +569,20 @@
                     <div class="module-hd" style="flex-wrap: wrap; height: auto;">
                         <div class="icon-v">
                             <svg viewBox="0 0 100 120">
-                                <rect x="15" y="15" width="60" height="85" rx="5" fill="#fff" stroke="#c62828" stroke-width="3"/>
-                                <rect x="25" y="5" width="40" height="20" rx="3" fill="#c62828"/>
-                                <circle cx="70" cy="85" r="18" fill="#e1f5fe" stroke="#333" stroke-width="2.5"/>
-                                <line x1="83" y1="98" x2="95" y2="110" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+                                <rect x="15" y="15" width="60" height="85" rx="5" fill="#fff" stroke="#c62828"
+                                    stroke-width="3" />
+                                <rect x="25" y="5" width="40" height="20" rx="3" fill="#c62828" />
+                                <circle cx="70" cy="85" r="18" fill="#e1f5fe" stroke="#333" stroke-width="2.5" />
+                                <line x1="83" y1="98" x2="95" y2="110" stroke="#333" stroke-width="4"
+                                    stroke-linecap="round" />
                             </svg>
                         </div>
                         <div class="title-v">Find It!</div>
-                        <p style="width: 100%; font-size: 13px; font-weight: 800; text-align: right; margin-top: -6px;">Find the word and color it in.</p>
+                        <p style="width: 100%; font-size: 13px; font-weight: 800; text-align: right; margin-top: -6px;">
+                            Find the word and color it in.</p>
                     </div>
-                    <div class="module-main" style="overflow: visible; align-items: stretch; justify-content: flex-end;">
+                    <div class="module-main"
+                        style="overflow: visible; align-items: stretch; justify-content: flex-end;">
                         <div class="hunt-wrap">
                             <div id="out-hunt" class="hunt-grid"></div>
                         </div>
@@ -459,10 +594,10 @@
                     <div class="module-hd">
                         <div class="icon-v">
                             <svg viewBox="0 0 80 80">
-                                <circle cx="40" cy="40" r="35" stroke="#4dd0e1" stroke-width="3" fill="none"/>
-                                <circle cx="28" cy="30" r="3" fill="#4dd0e1"/>
-                                <circle cx="52" cy="30" r="3" fill="#4dd0e1"/>
-                                <path d="M25 50 Q40 65 55 50" stroke="#4dd0e1" stroke-width="3" fill="none"/>
+                                <circle cx="40" cy="40" r="35" stroke="#4dd0e1" stroke-width="3" fill="none" />
+                                <circle cx="28" cy="30" r="3" fill="#4dd0e1" />
+                                <circle cx="52" cy="30" r="3" fill="#4dd0e1" />
+                                <path d="M25 50 Q40 65 55 50" stroke="#4dd0e1" stroke-width="3" fill="none" />
                             </svg>
                         </div>
                         <div class="title-v">Tell It!</div>
@@ -481,7 +616,7 @@
 
     <script>
         const uiWord = document.getElementById('wordIn');
-        
+
         function update() {
             const w = uiWord.value.trim().toLowerCase();
             if (!w) return;
@@ -516,7 +651,7 @@
             for (let i = 0; i < 24; i++) {
                 const div = document.createElement('div');
                 div.className = 'watermark-item';
-                div.textContent = txt; 
+                div.textContent = txt;
                 container.appendChild(div);
             }
         }
@@ -524,7 +659,7 @@
         function doTrace(w) {
             const wrap = document.getElementById('out-trace-wrap');
             wrap.innerHTML = '';
-            
+
             // === 三线格关键尺寸 ===
             // CSS .lines-w 高 65px，border-box，上下各 1.5px 边框
             // 内容区高度 ≈ 62px
@@ -536,7 +671,7 @@
             const Y_MID = 31;   // 中虚线位置
             const Y_BASE = 61;  // 基线位置（底边内侧留 1px）
             const X_HEIGHT_PX = Y_BASE - Y_MID; // = 30px
-            
+
             // === 用 Canvas 实测字体 x-height 比例 ===
             const testSize = 200;
             const canvas = document.createElement('canvas');
@@ -545,11 +680,11 @@
             ctx.font = `400 ${testSize}px 'Nunito', sans-serif`;
             const metrics = ctx.measureText('x');
             const xHeightRatio = metrics.actualBoundingBoxAscent / testSize;
-            
+
             // 反推字号：让 x-height 恰好 = X_HEIGHT_PX
             // 这个字号永远不变，无论单词多长
             const fs = Math.round(X_HEIGHT_PX / xHeightRatio);
-            
+
             // === 构建 SVG（不画线，线由 CSS 负责）===
             const ns = "http://www.w3.org/2000/svg";
             const w_px = (wrap.clientWidth || 300);
@@ -559,7 +694,7 @@
             svg.style.height = "100%";
             svg.style.position = "relative";
             svg.style.zIndex = "1";
-            
+
             // --- 点阵纹理 ---
             const defs = document.createElementNS(ns, "defs");
             const pat = document.createElementNS(ns, "pattern");
@@ -572,7 +707,7 @@
             pat.appendChild(dot);
             defs.appendChild(pat);
             svg.appendChild(defs);
-            
+
             // --- 文字 ---
             const txt = document.createElementNS(ns, "text");
             txt.textContent = w;
@@ -584,11 +719,11 @@
             txt.style.fontFamily = "'Nunito', sans-serif";
             txt.style.fontWeight = "400";
             txt.style.fontSize = fs + "px";
-            
+
             // 先渲染到 DOM 以测量实际宽度
             svg.appendChild(txt);
             wrap.appendChild(svg);
-            
+
             // 如果文字太宽，用 textLength 水平压缩（高度不变！）
             const actualW = txt.getComputedTextLength();
             const maxW = w_px * 0.92; // 留 4% 左右边距
@@ -633,7 +768,7 @@
         function doHunt(w) {
             const g = document.getElementById('out-hunt');
             g.innerHTML = '';
-            
+
             // 按首字母分组的干扰词库（常见 sight words + 常见词）
             const decoyBank = {
                 a: ['am', 'an', 'at', 'are', 'and', 'all', 'as', 'ask', 'ate', 'away', 'about', 'after'],
@@ -663,25 +798,25 @@
                 y: ['you', 'yes', 'yet', 'your', 'year', 'yell'],
                 z: ['zoo', 'zip', 'zero', 'zone', 'zoom']
             };
-            
+
             // 获取同首字母的干扰词，排除目标词本身
             const firstLetter = w.charAt(0).toLowerCase();
             let pool = (decoyBank[firstLetter] || []).filter(d => d !== w);
-            
+
             // 如果同首字母的词不够，补充通用词
             if (pool.length < 3) {
                 const fallback = ['the', 'and', 'is', 'it', 'to', 'was', 'in', 'he', 'of', 'at'];
                 pool = pool.concat(fallback.filter(d => d !== w));
             }
-            
+
             // 随机选 3 个干扰词
             const shuffled = pool.sort(() => Math.random() - 0.5);
             const decoys = shuffled.slice(0, 3);
-            
+
             // 3 个正确词 + 3 个干扰词
             const all = [w, w, w, ...decoys];
             all.sort(() => Math.random() - 0.5);
-            
+
             all.forEach(s => {
                 const c = document.createElement('div');
                 c.className = 'h-cell';
@@ -697,4 +832,5 @@
         window.onload = update;
     </script>
 </body>
+
 </html>
