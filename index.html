@@ -220,7 +220,9 @@
         .big-w {
             font-size: 90px;
             font-weight: 900;
-            line-height: 0.9;
+            line-height: 1.1; /* 恢复更自然的行高，避免由于紧凑行高导致文字视觉偏上 */
+            text-align: center;
+            margin-top: 5px; /* 利用上边距稍微把文字往下按一点，使它在整个格子中处于绝对的核心居中位置 */
         }
 
         .color-w {
@@ -228,6 +230,9 @@
             font-weight: 900;
             -webkit-text-stroke: 2.5px #000;
             color: transparent;
+            line-height: 1.1; /* 与 Read It 统一逻辑，确保完美视觉居中 */
+            text-align: center;
+            margin-top: 5px;
         }
 
         /* Handwriting / Tracing lines container */
@@ -688,18 +693,7 @@
             svg.style.position = "relative";
             svg.style.zIndex = "1";
 
-            // --- 点阵纹理 ---
-            const defs = document.createElementNS(ns, "defs");
-            const pat = document.createElementNS(ns, "pattern");
-            pat.setAttribute("id", "traceDots");
-            pat.setAttribute("width", "4"); pat.setAttribute("height", "4");
-            pat.setAttribute("patternUnits", "userSpaceOnUse");
-            const dot = document.createElementNS(ns, "circle");
-            dot.setAttribute("cx", "2"); dot.setAttribute("cy", "2");
-            dot.setAttribute("r", "1.1"); dot.setAttribute("fill", "#888");
-            pat.appendChild(dot);
-            defs.appendChild(pat);
-            svg.appendChild(defs);
+
 
             // --- 文字 ---
             const txt = document.createElementNS(ns, "text");
@@ -708,9 +702,14 @@
             txt.setAttribute("y", String(Y_BASE));
             txt.setAttribute("text-anchor", "middle");
             txt.setAttribute("dominant-baseline", "alphabetic");
-            txt.setAttribute("fill", "url(#traceDots)");
-            txt.style.fontFamily = "'Nunito', sans-serif";
-            txt.style.fontWeight = "400";
+            
+            // 改用真正的虚线临摹字体 Raleway Dots（原代码已引入但未应用）
+            // 这种字体本身就是单线的圆点，不是镂空的，非常适合真实的笔迹临摹
+            txt.setAttribute("fill", "#555"); // 字体本身的填充颜色
+            txt.setAttribute("stroke", "none"); // 移除外框线，彻底解决镂空问题
+            
+            txt.style.fontFamily = "'Raleway Dots', sans-serif";
+            txt.style.fontWeight = "400"; 
             txt.style.fontSize = fs + "px";
 
             // 先渲染到 DOM 以测量实际宽度
