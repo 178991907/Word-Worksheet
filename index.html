@@ -77,6 +77,15 @@
         }
 
         /* ========== 3. A4 Structure (Precise mm) ========== */
+        .page-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow: visible;
+            transition: height 0.2s ease;
+        }
+
         .a4-page {
             width: 210mm;
             height: 297mm;
@@ -89,6 +98,8 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            transform-origin: top center;
+            transition: transform 0.2s ease;
         }
 
         .inner-sheet {
@@ -392,6 +403,32 @@
             color: #000;
         }
 
+        /* ========== 6.5. Mobile Toolbar Response ========== */
+        @media (max-width: 600px) {
+            .toolbar {
+                padding: 10px 16px;
+                border-radius: 20px;
+                gap: 8px;
+                width: 90%;
+                max-width: 400px;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-bottom: 20px;
+            }
+
+            .toolbar input {
+                width: 100%;
+                flex: 1 1 120px;
+                text-align: center;
+            }
+
+            .toolbar button {
+                flex: 1;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+        }
+
         /* ========== 7. Print ========== */
         @media print {
 
@@ -415,6 +452,12 @@
                 display: none !important;
             }
 
+            .page-wrapper {
+                height: auto !important;
+                width: auto !important;
+                display: block !important;
+            }
+
             .a4-page {
                 box-shadow: none !important;
                 width: 210mm !important;
@@ -423,6 +466,7 @@
                 margin: 0 !important;
                 background: var(--page-yellow) !important;
                 -webkit-print-color-adjust: exact !important;
+                transform: none !important; /* 打印时不缩放 */
             }
 
             @page {
@@ -441,8 +485,9 @@
         <button class="btn-print" onclick="window.print()">打印</button>
     </div>
 
-    <div class="a4-page">
-        <div class="inner-sheet">
+    <div id="sheet-wrapper" class="page-wrapper">
+        <div class="a4-page">
+            <div class="inner-sheet">
             <!-- 自动生成的水印容器 -->
             <div id="wm-container" class="watermark-container"></div>
 
@@ -615,6 +660,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <script>
         const uiWord = document.getElementById('wordIn');
@@ -821,7 +867,40 @@
         }
 
         uiWord.onkeydown = (e) => { if (e.key === 'Enter') update(); };
-        window.onload = update;
+
+        // 移动端等比自适应缩放函数
+        function resizeSheet() {
+            const page = document.querySelector('.a4-page');
+            const wrapper = document.getElementById('sheet-wrapper');
+            if (!page || !wrapper) return;
+
+            // A4 宽度的像素基准：210mm ≈ 794px，高度基准：297mm ≈ 1123px
+            const baseWidth = 794;
+            const baseHeight = 1123;
+            const padding = 20; // 屏幕两侧留白
+            const winWidth = window.innerWidth;
+
+            if (winWidth < baseWidth + padding) {
+                // 计算等比缩放系数
+                const scaleRatio = (winWidth - padding) / baseWidth;
+                page.style.transform = `scale(${scaleRatio})`;
+                // 动态更新外层容器高度，消除 scale 产生的文档流大片空白
+                wrapper.style.height = (baseHeight * scaleRatio) + 'px';
+            } else {
+                // 桌面端正常显示，恢复默认样式
+                page.style.transform = '';
+                wrapper.style.height = '';
+            }
+        }
+
+        // 绑定窗口改变大小事件
+        window.addEventListener('resize', resizeSheet);
+
+        // 初始化更新与缩放
+        window.onload = () => {
+            update();
+            resizeSheet();
+        };
     </script>
 </body>
 
