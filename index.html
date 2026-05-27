@@ -82,13 +82,16 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            overflow: visible;
+            overflow: hidden; /* 防止溢出的 A4 尺寸产生移动端横向滚动条 */
             transition: height 0.2s ease;
         }
 
         .a4-page {
             width: 210mm;
+            min-width: 210mm; /* 核心：防止容器在窄屏/手机端强行横向压缩 A4 宽度 */
             height: 297mm;
+            min-height: 297mm; /* 核心：防止高度被挤压 */
+            flex-shrink: 0; /* 核心：防止 flex 子元素在超出父容器宽度时被自动缩小 */
             background: var(--page-yellow);
             padding: 8mm;
             /* Border thickness */
