@@ -476,6 +476,161 @@
                 size: A4;
                 margin: 0;
             }
+
+            /* 打印时必须强制隐藏弹窗遮罩 */
+            .modal-overlay {
+                display: none !important;
+            }
+        }
+
+        /* ========== 8. Print Modal Styles ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-card {
+            background: #fff;
+            width: 100%;
+            max-width: 420px;
+            border: 3px solid #000;
+            border-radius: 24px;
+            box-shadow: 6px 6px 0 #000;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed #eee;
+            padding-bottom: 12px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #000;
+            font-family: var(--font-main);
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            font-weight: 800;
+            cursor: pointer;
+            color: #888;
+            transition: 0.2s;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .modal-tip-desc {
+            font-weight: 700;
+            color: #e53935;
+            background: #ffebee;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1.5px solid #ffcdd2;
+        }
+
+        .tip-step {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1.5px solid #eee;
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: var(--teal-accent);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .step-content {
+            font-weight: 600;
+            color: #444;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .btn-modal-action {
+            flex: 1;
+            border: 2px solid #000;
+            padding: 12px;
+            border-radius: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-copy {
+            background: var(--page-yellow);
+            box-shadow: 3px 3px 0 #000;
+            color: #000;
+        }
+
+        .btn-copy:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #000;
+        }
+
+        .btn-direct-print {
+            background: #e0e0e0;
+            color: #333;
+            border: 2px solid #888;
+        }
+
+        .btn-direct-print:hover {
+            background: #d5d5d5;
         }
     </style>
 </head>
@@ -485,7 +640,7 @@
     <div class="toolbar">
         <input type="text" id="wordIn" value="the" maxlength="12" placeholder="Enter word...">
         <button class="btn-gen" onclick="update()">生成工作表</button>
-        <button class="btn-print" onclick="window.print()">打印</button>
+        <button class="btn-print" onclick="handlePrintClick()">打印</button>
     </div>
 
     <div id="sheet-wrapper" class="page-wrapper">
@@ -904,7 +1059,100 @@
             update();
             resizeSheet();
         };
+
+        // ========== 打印按钮点击控制逻辑 ==========
+        function handlePrintClick() {
+            // 简单检测是否是移动端（通过 userAgent 或屏幕宽度检测）
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
+            
+            if (isMobile) {
+                // 移动端：显示精心设计的打印引导弹窗
+                document.getElementById('print-modal').style.display = 'flex';
+            } else {
+                // 桌面端：直接调用系统打印
+                window.print();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('print-modal').style.display = 'none';
+        }
+
+        function triggerDirectPrint() {
+            closeModal();
+            // 延迟以配合弹窗关闭过渡效果，然后尝试调起打印
+            setTimeout(() => {
+                window.print();
+            }, 300);
+        }
+
+        function copyLink() {
+            const btn = document.getElementById('btn-copy-link');
+            const originalText = btn.textContent;
+            
+            // 创建临时文本框用于复制
+            const dummy = document.createElement('input');
+            dummy.value = window.location.href;
+            document.body.appendChild(dummy);
+            dummy.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    btn.textContent = '🎉 已成功复制链接！';
+                    btn.style.background = '#4caf50';
+                    btn.style.color = '#fff';
+                    btn.style.borderColor = '#388e3c';
+                    btn.style.boxShadow = 'none';
+                    
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                        btn.style.color = '';
+                        btn.style.borderColor = '';
+                        btn.style.boxShadow = '';
+                    }, 2000);
+                } else {
+                    alert('复制失败，请手动选择地址栏复制');
+                }
+            } catch (err) {
+                alert('您的浏览器不支持自动复制，请手动复制地址栏链接');
+            }
+            
+            document.body.removeChild(dummy);
+        }
     </script>
+
+    <!-- 移动端打印提示弹窗 (Modal) -->
+    <div id="print-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span class="modal-title">💡 手机端打印小贴士</span>
+                <button class="modal-close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-tip-desc">由于手机系统限制，微信等部分手机内置浏览器无法直接唤起打印机。</p>
+                
+                <div class="tip-step">
+                    <div class="step-num">方法一</div>
+                    <div class="step-content">
+                        点击手机屏幕右上角的 <strong>“...”</strong>，选择 <strong>“在浏览器中打开”</strong>（苹果手机推荐 Safari，安卓推荐 Chrome），即可直接调用手机连接的无线打印机。
+                    </div>
+                </div>
+                
+                <div class="tip-step">
+                    <div class="step-num">方法二 (最推荐)</div>
+                    <div class="step-content">
+                        点击下方按钮复制本页链接，在<strong>电脑浏览器</strong>中打开，即可一键进行出版级 PDF 打印或保存。
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-copy-link" class="btn-modal-action btn-copy" onclick="copyLink()">📋 复制页面链接</button>
+                <button class="btn-modal-action btn-direct-print" onclick="triggerDirectPrint()">🖨️ 尝试打印</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
